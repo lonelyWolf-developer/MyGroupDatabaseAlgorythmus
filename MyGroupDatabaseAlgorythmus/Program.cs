@@ -20,7 +20,7 @@ List<Comment> queryWithoutParrent = comments.Where(c => c.ParrentCommentId == nu
 
 foreach (Comment comment in queryWithoutParrent)
 {
-    Console.WriteLine(comment.CommentId);
+	Console.WriteLine(comment.CommentId);
 }
 
 Console.WriteLine();
@@ -34,19 +34,26 @@ var queryVariable = queryWithParrent.ToList();
 
 List<Comment> endsCollection = queryWithoutParrent;
 
-for (int i = 0; i < queryWithoutParrent.Count; i++)
+int queryVarCount = queryVariable.Count;
+
+while (queryVarCount > 0)
 {
-	for(int j = 0; j < queryVariable.Count; j++)
+	for (int i = 0; i < endsCollection.Count; i++)
 	{
-		if (queryWithoutParrent[i].CommentId == queryVariable[j].First().ParrentCommentId)
+		for (int j = 0; j < queryVariable.Count; j++)
 		{
-			endsCollection.InsertRange(i + 1, queryVariable[j]);
-			queryVariable.Remove(queryVariable[j]);
+			if (endsCollection[i].CommentId == queryVariable[j].First().ParrentCommentId)
+			{
+				endsCollection.InsertRange(i + 1, queryVariable[j]);
+				queryVariable[j].First().ParrentCommentId = null;
+				queryVarCount--;
+			}
 		}
-	}	
+	}
 }
 
-foreach(Comment comment in endsCollection)
-    Console.WriteLine(comment.CommentId);
+
+foreach (Comment comment in endsCollection)
+	Console.WriteLine(comment.CommentId);
 
 Console.ReadKey();
